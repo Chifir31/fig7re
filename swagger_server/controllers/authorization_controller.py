@@ -1,6 +1,7 @@
 from connexion.exceptions import Unauthorized
 from swagger_server.logger import logger
 
+
 def check_api_key(api_key, required_scopes):
     """
     Проверка API-ключа и его разрешений.
@@ -21,4 +22,3 @@ def check_api_key(api_key, required_scopes):
         raise Unauthorized("Неверный API-ключ")
     key_info = valid_api_keys[api_key]
     return {"user_id": key_info["user_id"]}
-

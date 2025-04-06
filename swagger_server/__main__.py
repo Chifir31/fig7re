@@ -1,3 +1,4 @@
+
 import re
 import threading
 import time
@@ -38,6 +39,7 @@ trace.set_tracer_provider(tracer_provider)
 # Получение трейсеров
 tracer = trace.get_tracer(__name__)
 
+
 def update_endpoint(endpoint, method):
     match = re.match(r"^(.*)/(\d+)$", endpoint)
     if match:
@@ -45,10 +47,13 @@ def update_endpoint(endpoint, method):
     else:
         if method == 'GET':
             return endpoint + '/GET_ALL'
-        return endpoint + '/' + method
+    return endpoint + '/' + method
 
-REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP Requests', ['endpoint', 'method'])
-FIGURE_COUNT = Gauge('figures_count', 'Total figures count in the database')
+REQUEST_COUNT = Counter('http_requests_total',
+                        'Total HTTP Requests',
+                        ['endpoint', 'method'])
+FIGURE_COUNT = Gauge('figures_count',
+                     'Total figures count in the database')
 
 def track_requests(app):
     @app.before_request
@@ -84,7 +89,8 @@ def main():
 
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = encoder.JSONEncoder
-    app.add_api('swagger.yaml', arguments={'title': 'Архив информации о коллекционных фигурках лошадей'},
+    app.add_api('swagger.yaml', arguments={'title': 'Архив информации'
+                                                    ' о коллекционных фигурках лошадей'},
                 pythonic_params=True)
 
     app.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///figure.db'
@@ -98,7 +104,8 @@ def main():
         db.create_all()
 
     # Запускаем поток для обновления метрик
-    threading.Thread(target=update_system_metrics, args=(app.app,), daemon=True).start()
+    threading.Thread(target=update_system_metrics,
+                     args=(app.app,), daemon=True).start()
     logger.info("Запущен поток для обновления метрик")
 
     logger.info("Сервер запущен")

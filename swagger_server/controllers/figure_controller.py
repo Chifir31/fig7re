@@ -1,8 +1,9 @@
 import connexion
-from flask import jsonify, request
-from swagger_server.models.figure import Figure  # noqa: E501
+from flask import jsonify
 from swagger_server.database import db
 from swagger_server.logger import logger
+from swagger_server.models.figure import Figure  # noqa: E501
+
 
 def figures_get():  # noqa: E501
     """Получить список фигурок
@@ -14,6 +15,7 @@ def figures_get():  # noqa: E501
     """
     figures = Figure.query.all()
     return jsonify([figure.to_dict() for figure in figures]), 200
+
 
 def figures_id_delete(id_):  # noqa: E501
     """Удалить фигурку
