@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install flake8
-          pip install -r swagger_server/requirements.txt
+          pip install -r requirements.txt
 
       - name: Run Lint
         run: flake8 swagger_server/
