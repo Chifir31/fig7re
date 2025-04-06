@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Архив информации о коллекционных фигурках лошадей
+  description: API для управления архивом.
+  version: 1.0.0
+servers:
+- url: http://localhost/v1
+tags:
+- name: figure
+  description: Информация о фигурках
+paths:
+  /figures:
+    get:
+      tags:
+      - figure
+      summary: Получить список фигурок
+      operationId: figures_get
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Figure"
+                x-content-type: application/json
+      x-openapi-router-controller: swagger_server.controllers.figure_controller
+    post:
+      tags:
+      - figure
+      summary: Добавить новую фигурку
+      operationId: figures_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Figure"
+        required: true
+      responses:
+        "201":
+          description: Фигурка успешно добавлена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Figure"
+      security:
+      - api_key: []
+      x-openapi-router-controller: swagger_server.controllers.figure_controller
+  /figures/{id}:
+    get:
+      tags:
+      - figure
+      summary: Получить фигурку по ID
+      operationId: figures_id_get
+      parameters:
+      - name: id
+        in: path
+        description: ID фигурки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Figure"
+        "404":
+          description: Фигурка не найдена
+      x-openapi-router-controller: swagger_server.controllers.figure_controller
+    put:
+      tags:
+      - figure
+      summary: Обновить фигурку
+      operationId: figures_id_put
+      parameters:
+      - name: id
+        in: path
+        description: ID фигурки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Figure"
+        required: true
+      responses:
+        "200":
+          description: Фигурка успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Figure"
+        "404":
+          description: Фигурка не найдена
+      security:
+      - api_key: []
+      x-openapi-router-controller: swagger_server.controllers.figure_controller
+    delete:
+      tags:
+      - figure
+      summary: Удалить фигурку
+      operationId: figures_id_delete
+      parameters:
+      - name: id
+        in: path
+        description: ID фигурки
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Фигурка успешно удалена
+        "404":
+          description: Фигурка не найдена
+      security:
+      - api_key: []
+      x-openapi-router-controller: swagger_server.controllers.figure_controller
+components:
+  schemas:
+    Figure:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bowing Lusitano mare Palomino
+        brand:
+          type: string
+          example: Collecta
+        release:
+          type: number
+          format: int64
+          example: 2025
+        scale:
+          type: string
+          example: 1 к 20
+        size:
+          type: string
+          example: 15.0cm x 9.3cm
+      example:
+        size: 15.0cm x 9.3cm
+        release: 2025
+        name: Bowing Lusitano mare Palomino
+        scale: 1 к 20
+        id: 1
+        brand: Collecta
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+      x-apikeyInfoFunc: swagger_server.controllers.authorization_controller.check_api_key
+
