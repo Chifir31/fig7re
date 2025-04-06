@@ -20,7 +20,6 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
 )
 
 
-
 # Создание ресурса с именем сервиса
 resource = Resource(attributes={
     ResourceAttributes.SERVICE_NAME: "python_server"
