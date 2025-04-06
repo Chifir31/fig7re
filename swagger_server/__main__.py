@@ -1,4 +1,3 @@
-
 import re
 import threading
 import time
@@ -17,6 +16,7 @@ from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+
 
 # Создание ресурса с именем сервиса
 resource = Resource(attributes={
@@ -49,19 +49,20 @@ def update_endpoint(endpoint, method):
             return endpoint + '/GET_ALL'
     return endpoint + '/' + method
 
+
 REQUEST_COUNT = Counter('http_requests_total',
                         'Total HTTP Requests',
                         ['endpoint', 'method'])
 FIGURE_COUNT = Gauge('figures_count',
                      'Total figures count in the database')
 
+
 def track_requests(app):
     @app.before_request
     def before_request():
-        # Начинаем новый спан
         span_name = f"{request.method} {request.path}"
         span = tracer.start_span(span_name)
-        request._otel_span = span  # Сохраняем спан в объекте запроса для доступа после
+        request._otel_span = span
 
         endpoint = request.path
         method = request.method
@@ -71,11 +72,11 @@ def track_requests(app):
 
     @app.after_request
     def after_request(response):
-        # Завершаем спан
         span = getattr(request, '_otel_span', None)
         if span:
-            span.end()  # Закрываем спан
+            span.end()
         return response
+
 
 def update_system_metrics(app):
     while True:
@@ -83,14 +84,15 @@ def update_system_metrics(app):
             FIGURE_COUNT.set(db.session.query(func.count(Figure.id)).scalar())
         time.sleep(1)
 
+
 def main():
     # Запуск сервера для экспорта метрик
     start_http_server(8000)
 
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = encoder.JSONEncoder
-    app.add_api('swagger.yaml', arguments={'title': 'Архив информации'
-                                                    ' о коллекционных фигурках лошадей'},
+    app.add_api('swagger.yaml',
+                arguments={'title': 'Архив информации о коллекционных фигурках лошадей'},
                 pythonic_params=True)
 
     app.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///figure.db'
@@ -110,6 +112,7 @@ def main():
 
     logger.info("Сервер запущен")
     app.run(port=5000)
+
 
 if __name__ == '__main__':
     main()

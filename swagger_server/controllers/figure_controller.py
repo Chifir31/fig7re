@@ -60,7 +60,7 @@ def figures_id_put(body, id_):  # noqa: E501
 
      # noqa: E501
 
-    :param body: 
+    :param body:
     :type body: dict | bytes
     :param id_: ID фигурки
     :type id_: int
@@ -91,7 +91,7 @@ def figures_post(body):  # noqa: E501
 
      # noqa: E501
 
-    :param body: 
+    :param body:
     :type body: dict | bytes
 
     :rtype: Figure

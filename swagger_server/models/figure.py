@@ -22,7 +22,7 @@ class Figure(db.Model):
     scale = db.Column(db.String(10), nullable=False)
     size = db.Column(db.String(50), nullable=True)
 
-    def __init__(self, id: int=None, name: str=None, brand: str=None, release: int=None, scale: str=None, size: str=None):  # noqa: E501
+    def __init__(self, id: int = None, name: str = None, brand: str = None, release: int = None, scale: str = None, size: str = None):  # noqa: E501
         self.id = id
         self.name = name
         self.brand = brand
@@ -57,4 +57,3 @@ class Figure(db.Model):
             'scale': self.scale,
             'size': self.size
         }
-
