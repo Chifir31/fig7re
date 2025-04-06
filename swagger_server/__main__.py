@@ -15,7 +15,10 @@ from .models import Figure
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
+    OTLPSpanExporter,
+)
+
 
 
 # Создание ресурса с именем сервиса
@@ -91,9 +94,13 @@ def main():
 
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = encoder.JSONEncoder
-    app.add_api('swagger.yaml',
-                arguments={'title': 'Архив информации о коллекционных фигурках лошадей'},
-                pythonic_params=True)
+    app.add_api(
+        'swagger.yaml',
+        arguments={
+            'title': 'Архив информации о коллекционных фигурках лошадей'
+        },
+        pythonic_params=True,
+    )
 
     app.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///figure.db'
     app.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
